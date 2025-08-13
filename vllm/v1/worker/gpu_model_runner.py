@@ -1714,28 +1714,38 @@ class GPUModelRunner(LoRAModelRunnerMixin, KVConnectorModelRunnerMixin):
 
         # Get the valid generated tokens.
         sampled_token_ids = sampler_output.sampled_token_ids
+
+        sample_number = sampled_token_ids.shape[0]
         max_gen_len = sampled_token_ids.shape[-1]
+
+        # Mask out the sampled tokens that should not be sampled.
+        mask = torch.ones(sample_number, dtype=torch.bool)
+        mask[list(discard_sampled_tokens_req_indices)] = False
+        valid_sampled_token_ids = sampled_token_ids[mask]
+
         if max_gen_len == 1:
             # No spec decode tokens.
-            valid_sampled_token_ids = sampled_token_ids.tolist()
+            # Mask out the sampled tokens that should not be sampled.
+            valid_sampled_token_ids = valid_sampled_token_ids.tolist()
         else:
             # Includes spec decode tokens.
             valid_sampled_token_ids = self.rejection_sampler.parse_output(
-                sampled_token_ids,
+                valid_sampled_token_ids,
                 self.input_batch.vocab_size,
             )
-        # Mask out the sampled tokens that should not be sampled.
-        for i in discard_sampled_tokens_req_indices:
-            valid_sampled_token_ids[i].clear()
 
         # Cache the sampled tokens in the model runner, so that the scheduler
         # doesn't need to send them back.
         # NOTE(woosuk): As an exception, when using PP, the scheduler sends
         # the sampled tokens back, because there's no direct communication
         # between the first-stage worker and the last-stage worker.
-        for req_idx, sampled_ids in enumerate(valid_sampled_token_ids):
-            if not sampled_ids:
+        seq_id = 0
+        for req_idx in range(sample_number):
+            if req_idx in discard_sampled_tokens_req_indices:
                 continue
+            sampled_ids = valid_sampled_token_ids[seq_id]
+            seq_id += 1
+
 
             start_idx = self.input_batch.num_tokens_no_spec[req_idx]
             end_idx = start_idx + len(sampled_ids)
