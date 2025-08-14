@@ -124,9 +124,11 @@ class RejectionSampler(nn.Module):
         # Create mask for valid tokens.
         valid_mask = ((output_token_ids != PLACEHOLDER_TOKEN_ID) &
                       (output_token_ids < vocab_size))
+        flat_valid_tokens = torch.masked_select(output_token_ids, valid_mask)
+        num_valid_per_row = valid_mask.sum(dim=1).cpu().tolist()
         outputs = [
-            row[valid_mask[i]].tolist()
-            for i, row in enumerate(output_token_ids)
+            t.tolist()
+            for t in torch.split(flat_valid_tokens, num_valid_per_row)
         ]
         return outputs
 
