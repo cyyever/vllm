@@ -121,13 +121,12 @@ class RejectionSampler(nn.Module):
         Returns:
             A list of lists of token IDs.
         """
-        output_token_ids_np = output_token_ids.cpu().numpy()
         # Create mask for valid tokens.
-        valid_mask = ((output_token_ids_np != PLACEHOLDER_TOKEN_ID) &
-                      (output_token_ids_np < vocab_size))
+        valid_mask = ((output_token_ids != PLACEHOLDER_TOKEN_ID) &
+                      (output_token_ids < vocab_size))
         outputs = [
             row[valid_mask[i]].tolist()
-            for i, row in enumerate(output_token_ids_np)
+            for i, row in enumerate(output_token_ids)
         ]
         return outputs
 
