@@ -452,7 +452,7 @@ class Ovis2_5Processor(ProcessorMixin):
             [grid_t, grid_h, grid_w], is_video)
         return torch.tensor(
             flatten_patches), visual_placeholders, torch.tensor(
-                [[grid_t, grid_h, grid_w]])
+                [[grid_t, grid_h, grid_w]], device="cpu")
 
 
 AutoProcessor.register("Ovis2_5Processor", Ovis2_5Processor)
