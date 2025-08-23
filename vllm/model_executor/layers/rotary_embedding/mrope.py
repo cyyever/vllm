@@ -893,9 +893,9 @@ class MRotaryEmbedding(RotaryEmbedding):
                                     "tokens_per_second", 25)
 
         if isinstance(image_grid_thw, list):
-            image_grid_thw = torch.tensor(image_grid_thw)
+            image_grid_thw = torch.tensor(image_grid_thw, device="cpu")
         if isinstance(video_grid_thw, list):
-            video_grid_thw = torch.tensor(video_grid_thw)
+            video_grid_thw = torch.tensor(video_grid_thw, device="cpu")
 
         src_item = input_tokens
         audio_seqlens = audio_feature_lengths
