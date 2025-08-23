@@ -418,16 +418,23 @@ def group_mm_kwargs_by_modality(
         # to avoid creating an extra batch dimension (except for fields
         # that are meant to be stacked anyway).
         # We will also need to update each model to remove `flatten_bn`.
+        batched_inputs = MultiModalKwargs.batch(
+            [
+                MultiModalKwargsItems.from_seq([item]).get_data()
+                for item in items_lst
+            ],
+            pin_memory=pin_memory,
+        )
+        cpu_tensors = {}
+        for k in list(batched_inputs.keys()):
+            if "grid_thw" in k:
+                cpu_tensors[k] = batched_inputs.pop(k)
         mm_kwargs_group = MultiModalKwargs.as_kwargs(
-            MultiModalKwargs.batch(
-                [
-                    MultiModalKwargsItems.from_seq([item]).get_data()
-                    for item in items_lst
-                ],
-                pin_memory=pin_memory,
-            ),
+            batched_inputs,
             device=device,
         )
+        for k, v in cpu_tensors.items():
+            mm_kwargs_group[k] = v
 
         yield modality, len(items_lst), mm_kwargs_group
 
