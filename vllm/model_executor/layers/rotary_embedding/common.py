@@ -8,7 +8,7 @@ import torch
 from vllm.platforms import current_platform
 
 if current_platform.is_cuda():
-    from vllm.vllm_flash_attn.layers.rotary import apply_rotary_emb
+    from flash_attn.layers.rotary import apply_rotary_emb
 
 
 # common functions

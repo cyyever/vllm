@@ -19,7 +19,7 @@ from vllm.attention.backends.flash_attn import (FlashAttentionBackend,
 from vllm.distributed.parallel_state import get_tensor_model_parallel_rank
 from vllm.logger import init_logger
 from vllm.utils import async_tensor_h2d
-from vllm.vllm_flash_attn import (flash_attn_varlen_func,
+from flash_attn import (flash_attn_varlen_func,
                                   flash_attn_with_kvcache, sparse_attn_func)
 
 if TYPE_CHECKING:

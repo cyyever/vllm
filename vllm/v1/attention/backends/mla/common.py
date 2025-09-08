@@ -221,7 +221,7 @@ from vllm.v1.attention.backends.utils import (AttentionMetadataBuilder,
 from vllm.v1.kv_cache_interface import AttentionSpec
 
 try:
-    from vllm.vllm_flash_attn import flash_attn_varlen_func
+    from flash_attn import flash_attn_varlen_func
     is_vllm_fa = True
 except ImportError:
     # For rocm use upstream flash attention

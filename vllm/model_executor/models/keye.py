@@ -320,7 +320,7 @@ def apply_rotary_pos_emb_flashatt(
     cos = cos.chunk(2, dim=-1)[0].contiguous()
     sin = sin.chunk(2, dim=-1)[0].contiguous()
 
-    from vllm.vllm_flash_attn.layers.rotary import apply_rotary_emb
+    from flash_attn.layers.rotary import apply_rotary_emb
 
     q_embed = apply_rotary_emb(q.float(), cos.float(), sin.float()).type_as(q)
     k_embed = apply_rotary_emb(k.float(), cos.float(), sin.float()).type_as(k)
