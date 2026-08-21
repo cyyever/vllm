@@ -739,48 +739,6 @@ _VLLM_MODELS = {
 # might not be the target we want to run.
 _SUBPROCESS_COMMAND = [sys.executable, "-m", "vllm.model_executor.models.registry"]
 
-_PREVIOUSLY_SUPPORTED_MODELS = {
-    "MotifForCausalLM": "0.10.2",
-    "Phi3SmallForCausalLM": "0.9.2",
-    "Phi4FlashForCausalLM": "0.10.2",
-    "Phi4MultimodalForCausalLM": "0.12.0",
-    "JAISLMHeadModel": "0.22.0",
-    "ErnieModel": "0.23.0",
-    "ErnieForSequenceClassification": "0.23.0",
-    "ErnieForTokenClassification": "0.23.0",
-    "InternLM2VEForCausalLM": "0.23.0",
-    "QWenLMHeadModel": "0.23.0",
-    "QwenVLForConditionalGeneration": "0.23.0",
-    "InternLMForCausalLM": "0.23.0",
-    # encoder-decoder models except whisper
-    # have been removed for V0 deprecation.
-    "DonutForConditionalGeneration": "0.10.2",
-    "MllamaForConditionalGeneration": "0.10.2",
-    "XverseForCausalLM": "0.23.0",
-    "Dots1ForCausalLM": "0.23.0",
-    "BambaForCausalLM": "0.23.0",
-    "MiniMaxForCausalLM": "0.23.0",
-    "MiniMaxText01ForCausalLM": "0.23.0",
-    "MiniMaxM1ForCausalLM": "0.23.0",
-    "MiniMaxVL01ForConditionalGeneration": "0.23.0",
-    "BaiChuanForCausalLM": "0.23.0",
-    "BaichuanForCausalLM": "0.23.0",
-    "AquilaModel": "0.24.0",
-    "AquilaForCausalLM": "0.24.0",
-    "Grok1ModelForCausalLM": "0.24.0",
-    "Grok1ForCausalLM": "0.24.0",
-    "TarsierForConditionalGeneration": "0.24.0",
-    "Tarsier2ForConditionalGeneration": "0.23.0",  # last version with Transformers v4
-    "MantisForConditionalGeneration": "0.24.0",
-    "MusicFlamingoForConditionalGeneration": "0.24.0",
-    "AyaVisionForConditionalGeneration": "0.24.0",
-    "TeleChatForCausalLM": "0.25.0",
-    "PersimmonForCausalLM": "0.25.0",
-    "FuyuForCausalLM": "0.25.0",
-    "Plamo2ForCausalLM": "0.26.0",
-    "OuroForCausalLM": "0.26.0",
-}
-
 _OOT_SUPPORTED_MODELS = {
     "BartModel": "https://github.com/vllm-project/bart-plugin",
     "BartForConditionalGeneration": "https://github.com/vllm-project/bart-plugin",
@@ -1110,15 +1068,6 @@ class _ModelRegistry:
             )
 
         for arch in architectures:
-            if arch in _PREVIOUSLY_SUPPORTED_MODELS:
-                previous_version = _PREVIOUSLY_SUPPORTED_MODELS[arch]
-
-                raise ValueError(
-                    f"Model architecture {arch} was supported in vLLM until "
-                    f"v{previous_version}, and is not supported anymore. "
-                    "Please use an older version of vLLM if you want to "
-                    "use this model architecture."
-                )
             if arch in _OOT_SUPPORTED_MODELS:
                 plugin_url = _OOT_SUPPORTED_MODELS[arch]
 
