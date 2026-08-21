@@ -501,7 +501,6 @@ class RocmPlatform(Platform):
         "fp8",
         "deepseek_v4_fp8",
         "compressed-tensors",
-        "fbgemm_fp8",
         "quark",
         "mxfp4",
         "mxfp8",
