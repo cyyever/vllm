@@ -9,7 +9,6 @@ import os
 import signal
 import socket
 import tempfile
-import warnings
 from argparse import Namespace
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -68,7 +67,6 @@ prometheus_multiproc_dir: tempfile.TemporaryDirectory
 # Cannot use __name__ (https://github.com/vllm-project/vllm/pull/4765)
 logger = init_logger("vllm.entrypoints.openai.api_server")
 
-_FALLBACK_SUPPORTED_TASKS: tuple[SupportedTask, ...] = ("generate",)
 
 
 def _attach_endpoint_plugins(
@@ -188,18 +186,9 @@ async def build_async_engine_client_from_engine_args(
 
 def build_app(
     args: Namespace,
-    supported_tasks: tuple["SupportedTask", ...] | None = None,
+    supported_tasks: tuple["SupportedTask", ...],
     model_config: ModelConfig | None = None,
 ) -> FastAPI:
-    if supported_tasks is None:
-        warnings.warn(
-            "The 'supported_tasks' parameter was not provided to "
-            "build_app and will be required in a future version. "
-            "Defaulting to ('generate',).",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        supported_tasks = _FALLBACK_SUPPORTED_TASKS
 
     if args.disable_fastapi_docs:
         app = FastAPI(
@@ -356,7 +345,7 @@ async def init_app_state(
     engine_client: EngineClient,
     state: State,
     args: Namespace,
-    supported_tasks: tuple["SupportedTask", ...] | None = None,
+    supported_tasks: tuple["SupportedTask", ...],
 ) -> None:
     vllm_config = engine_client.vllm_config
 
@@ -366,16 +355,6 @@ async def init_app_state(
         init_parser_metrics(
             model_name=cast(str, vllm_config.model_config.served_model_name)
         )
-
-    if supported_tasks is None:
-        warnings.warn(
-            "The 'supported_tasks' parameter was not provided to "
-            "init_app_state and will be required in a future version. "
-            "Please pass 'supported_tasks' explicitly.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        supported_tasks = _FALLBACK_SUPPORTED_TASKS
 
     if args.served_model_name is not None:
         served_model_names = args.served_model_name
