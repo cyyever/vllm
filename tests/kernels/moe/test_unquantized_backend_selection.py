@@ -25,7 +25,6 @@ skipif_not_cuda_rocm = pytest.mark.skipif(
         ("is_rocm", UnquantizedMoeBackend.TRITON),  # ROCm without AITER
         ("is_cpu", UnquantizedMoeBackend.CPU),
         ("is_xpu", UnquantizedMoeBackend.XPU),
-        ("is_tpu", UnquantizedMoeBackend.TPU),
         ("is_out_of_tree", UnquantizedMoeBackend.OOT),
     ],
 )
@@ -54,7 +53,6 @@ def test_select_default_backend_by_platform(
         mock_platform.is_rocm.return_value = False
         mock_platform.is_cpu.return_value = False
         mock_platform.is_xpu.return_value = False
-        mock_platform.is_tpu.return_value = False
         mock_platform.is_out_of_tree.return_value = False
 
         # Set only the specified platform to True
@@ -65,7 +63,6 @@ def test_select_default_backend_by_platform(
         patch.object(current_platform, "is_rocm", return_value=False),
         patch.object(current_platform, "is_cpu", return_value=False),
         patch.object(current_platform, "is_xpu", return_value=False),
-        patch.object(current_platform, "is_tpu", return_value=False),
         patch.object(current_platform, "is_out_of_tree", return_value=False),
         patch.object(current_platform, platform_method, return_value=True),
     ):
@@ -78,7 +75,6 @@ def test_select_default_backend_by_platform(
         if expected_backend in [
             UnquantizedMoeBackend.CPU,
             UnquantizedMoeBackend.OOT,
-            UnquantizedMoeBackend.TPU,
         ]:
             assert expert_cls is None
         else:
@@ -105,7 +101,6 @@ def test_select_rocm_aiter_backend(mock_aiter_enabled, mock_has_flashinfer):
         mock_platform.is_rocm.return_value = True
         mock_platform.is_cpu.return_value = False
         mock_platform.is_xpu.return_value = False
-        mock_platform.is_tpu.return_value = False
         mock_platform.is_out_of_tree.return_value = False
 
         moe_config = make_dummy_moe_config()
@@ -133,7 +128,6 @@ def test_select_cuda_flashinfer_trtllm_backend(
         patch.object(current_platform, "is_rocm", return_value=False),
         patch.object(current_platform, "is_cpu", return_value=False),
         patch.object(current_platform, "is_xpu", return_value=False),
-        patch.object(current_platform, "is_tpu", return_value=False),
         patch.object(current_platform, "is_out_of_tree", return_value=False),
         patch.object(current_platform, "has_device_capability", return_value=True),
     ):
@@ -173,7 +167,6 @@ def test_select_cuda_flashinfer_trtllm_modular_backend(
         patch.object(current_platform, "is_rocm", return_value=False),
         patch.object(current_platform, "is_cpu", return_value=False),
         patch.object(current_platform, "is_xpu", return_value=False),
-        patch.object(current_platform, "is_tpu", return_value=False),
         patch.object(current_platform, "is_out_of_tree", return_value=False),
         patch.object(current_platform, "has_device_capability", return_value=True),
     ):
@@ -214,7 +207,6 @@ def test_select_cuda_flashinfer_trtllm_modular_for_standard_all2all(
         patch.object(current_platform, "is_rocm", return_value=False),
         patch.object(current_platform, "is_cpu", return_value=False),
         patch.object(current_platform, "is_xpu", return_value=False),
-        patch.object(current_platform, "is_tpu", return_value=False),
         patch.object(current_platform, "is_out_of_tree", return_value=False),
         patch.object(
             current_platform, "is_device_capability_family", return_value=False
@@ -249,7 +241,6 @@ def test_select_cuda_deepep_ht_falls_back_from_trtllm(
         patch.object(current_platform, "is_rocm", return_value=False),
         patch.object(current_platform, "is_cpu", return_value=False),
         patch.object(current_platform, "is_xpu", return_value=False),
-        patch.object(current_platform, "is_tpu", return_value=False),
         patch.object(current_platform, "is_out_of_tree", return_value=False),
         patch.object(
             current_platform, "is_device_capability_family", return_value=False
@@ -284,7 +275,6 @@ def test_select_cuda_flashinfer_trtllm_ag_rs_uses_monolithic(
         patch.object(current_platform, "is_rocm", return_value=False),
         patch.object(current_platform, "is_cpu", return_value=False),
         patch.object(current_platform, "is_xpu", return_value=False),
-        patch.object(current_platform, "is_tpu", return_value=False),
         patch.object(current_platform, "is_out_of_tree", return_value=False),
         patch.object(
             current_platform, "is_device_capability_family", return_value=False
@@ -339,7 +329,6 @@ def test_select_cuda_flashinfer_cutlass_backend(
         patch.object(current_platform, "is_rocm", return_value=False),
         patch.object(current_platform, "is_cpu", return_value=False),
         patch.object(current_platform, "is_xpu", return_value=False),
-        patch.object(current_platform, "is_tpu", return_value=False),
         patch.object(current_platform, "is_out_of_tree", return_value=False),
         patch.object(current_platform, "has_device_capability", return_value=True),
     ):

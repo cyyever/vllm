@@ -69,7 +69,6 @@ class PlatformEnum(enum.Enum):
 
     CUDA = enum.auto()
     ROCM = enum.auto()
-    TPU = enum.auto()
     XPU = enum.auto()
     CPU = enum.auto()
     OOT = enum.auto()
@@ -192,18 +191,12 @@ class Platform:
     def is_rocm(self) -> bool:
         return self._enum == PlatformEnum.ROCM
 
-    def is_tpu(self) -> bool:
-        return self._enum == PlatformEnum.TPU
-
     def is_xpu(self) -> bool:
         return self._enum == PlatformEnum.XPU
 
     def is_cpu(self) -> bool:
         return self._enum == PlatformEnum.CPU
 
-    def uses_host_device_handling(self) -> bool:
-        """Whether vLLM should leave DeviceConfig.device unset."""
-        return self.is_tpu()
 
     def is_zen_cpu(self) -> bool:
         return False

@@ -224,9 +224,6 @@ def test_structured_output(
     sample_sql_lark = SAMPLE_SQL_LARK
     sample_regex = SAMPLE_REGEX
     sample_structured_outputs_choices = SAMPLE_STRUCTURED_OUTPUTS_CHOICES
-    if current_platform.is_tpu() and speculative_config:
-        pytest.skip("TPU does not support speculative decoding")
-
     # Use a single LLM instance for several scenarios to
     # speed up the test suite.
     llm = LLM(
@@ -739,16 +736,11 @@ def test_structured_output_with_reasoning_matrices(
     speculative_config: dict[str, Any] | None,
     async_scheduling: bool,
 ):
-    if current_platform.is_tpu() and speculative_config:
-        pytest.skip("TPU does not support speculative decoding")
-
     # Use a single LLM instance for several scenarios to
     # speed up the test suite.
     llm = LLM(
         model=model_name,
-        # Don't use eager execution on TPUs because we want to test for no
-        # recompilation at runtime
-        enforce_eager=bool(not current_platform.is_tpu()),
+        enforce_eager=False,
         max_model_len=1024,
         max_num_seqs=16,
         structured_outputs_config=dict(
@@ -915,9 +907,7 @@ def test_structured_output_batched_with_non_structured_outputs_requests(
     backend: str,
 ):
     sample_json_schema = SAMPLE_JSON_SCHEMA
-    # Don't use eager execution on TPUs because we want to test for no
-    # recompilation at runtime
-    enforce_eager = bool(not current_platform.is_tpu())
+    enforce_eager = False
 
     llm = LLM(
         model="meta-llama/Meta-Llama-3.1-8B-Instruct",

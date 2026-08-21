@@ -113,13 +113,8 @@ try:
             # We can remove this API after it is fixed in compiled graph.
             assert self.worker is not None, "Worker is not initialized"
             if not self.compiled_dag_cuda_device_set:
-                if current_platform.is_tpu():
-                    # Not needed
-                    pass
-                else:
-                    assert self.worker.device is not None
-                    current_platform.set_device(self.worker.device)
-
+                assert self.worker.device is not None
+                current_platform.set_device(self.worker.device)
                 self.compiled_dag_cuda_device_set = True
 
         def execute_model_ray(
@@ -671,16 +666,6 @@ def initialize_ray_cluster(
     )
     # Set the placement group in the parallel config
     parallel_config.placement_group = current_placement_group
-
-
-def get_num_tpu_nodes() -> int:
-    from ray._private.accelerators import TPUAcceleratorManager
-
-    cluster_resources = ray.cluster_resources()
-    total_tpus = int(cluster_resources["TPU"])
-    tpus_per_node = TPUAcceleratorManager.get_current_node_num_accelerators()
-    assert total_tpus % tpus_per_node == 0
-    return total_tpus // tpus_per_node
 
 
 def get_num_nodes_in_placement_group() -> int:

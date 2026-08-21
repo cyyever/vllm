@@ -916,9 +916,7 @@ class ParallelConfig:
 
             backend: DistributedExecutorBackend = "mp"
             ray_found = ray_utils.ray_is_available()
-            if current_platform.is_tpu() and envs.VLLM_XLA_USE_SPMD:
-                backend = "uni"
-            elif current_platform.is_cuda() and self.nnodes > 1:
+            if current_platform.is_cuda() and self.nnodes > 1:
                 backend = "mp"
             elif (
                 current_platform.is_cuda()
