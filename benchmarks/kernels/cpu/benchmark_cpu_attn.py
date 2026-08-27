@@ -22,9 +22,7 @@ def get_attn_isa(
     dtype: torch.dtype | None = None,
 ):
     # Delegate to _get_attn_isa so the fallback path applies the same arch
-    # gating (e.g. RISC-V RVV is only chosen when the build's hardcoded
-    # VLEN=128 kernel is actually present; on VLEN=256 / scalar hosts it
-    # correctly falls through to vec/vec16).
+    # gating.
     return _get_attn_isa(
         dtype if dtype is not None else torch.bfloat16,
         block_size if block_size else 32,
@@ -233,7 +231,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--use-sink", action="store_true")
     parser.add_argument(
-        "--isa", type=str, choices=["vec", "neon", "amx", "vec16", "rvv"], default=None
+        "--isa", type=str, choices=["vec", "neon", "amx", "vec16"], default=None
     )
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--iters", type=int, default=20)
