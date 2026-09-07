@@ -29,7 +29,7 @@ from collections import defaultdict
 from collections.abc import Callable, Iterable, Mapping, Sequence, Set
 from functools import cached_property, partial
 from itertools import chain
-from typing import Annotated, Any, Literal, TypeAlias
+from typing import Annotated, Any, Literal, TypeAlias, TypedDict, TypeVar
 
 import numpy as np
 import torch
@@ -41,7 +41,6 @@ from transformers.dynamic_module_utils import (
     get_class_from_dynamic_module,
     resolve_trust_remote_code,
 )
-from typing_extensions import TypedDict, TypeVar
 
 from vllm.config import VllmConfig
 from vllm.config.multimodal import (

@@ -9,12 +9,11 @@ import os
 import sys
 import traceback
 from collections.abc import Callable
-from typing import Concatenate
+from typing import Concatenate, ParamSpec
 
 import torch
 from torch.distributed import ProcessGroup
 from torch.multiprocessing import spawn  # pyright: ignore[reportPrivateImportUsage]
-from typing_extensions import ParamSpec
 
 from vllm.platforms import current_platform
 from vllm.utils.import_utils import has_deep_ep, has_deep_ep_v2
